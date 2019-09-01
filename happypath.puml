@@ -1,0 +1,51 @@
+@startuml
+
+!include skin.iuml
+
+actor "Customer" as CC
+participant "Mobile App" as A
+participant "Loan Service" as C
+
+CC -> A: Initiate Payment Screen
+
+A -> C: Request Loan Position
+activate C
+note over A
+""GET /loan/:id HTTP/1.1""
+end note
+C --> A
+deactivate C
+note over A
+""HTTP/1.1 200 OK""
+end note
+
+...
+
+A -> C: Request Payment Simulation
+activate C
+note over A
+""PUT /loan/:id/payments/:payment-id?dry-run=true HTTP/1.1""
+end note
+C --> A
+deactivate C
+
+A --> CC: Should Pay $ 200
+
+...
+
+CC -> A: Confirm Payment of $ 200
+
+A -> C: Request Payment
+activate C
+note over A
+""PUT /loan/:id/payments/:payment-id HTTP/1.1""
+end note
+C -->]: Request Money Transfer of $ 200
+
+C --> A
+note over A: HTTP/1.1 202 Accepted
+deactivate C
+
+A --> CC: Notify Payment is Processing
+
+@enduml

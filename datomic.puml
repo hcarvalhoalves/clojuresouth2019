@@ -1,0 +1,27 @@
+@startuml
+
+!include skin.iuml
+
+database "Storage" as S
+node "Datomic Transactor" as T
+
+node "JVM" as JVM1 {
+    database "Cache" as C1
+    component "Your Service" as Y1
+}
+
+node "JVM" as JVM2 {
+    database "Cache" as C2
+    component "Your Service" as Y2
+}
+
+T ..> S: data segments
+Y1 ..> S: cache misses
+Y1 .> C1: cache hits
+Y1 ..> T: writes
+
+Y2 ..> S: cache misses
+Y2 .> C2: cache hits
+Y2 ..> T: writes
+
+@enduml

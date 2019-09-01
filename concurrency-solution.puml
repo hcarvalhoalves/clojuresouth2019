@@ -1,0 +1,62 @@
+@startuml
+
+!include skin.iuml
+
+actor "Customer" as CC
+participant "Mobile App" as A
+participant "Instance A" as C
+participant "Datomic Transactor" as D
+participant "Instance B" as C2
+
+CC -[#red]> A: Initiate Payment Screen
+
+A -[#red]> C: Request Payment Simulation
+note over A
+""HTTP/1.1 200 OK""
+""ETag: "DEADBEEF"""
+end note
+return
+
+A -[#red]-> CC: Should Pay $ 200
+
+]-[#blue]> C2: Some Concurrent Update
+C2 -[#blue]-> D
+note over D #EEFFEE
+""~[:db.fn/cas loan-id :loan/version "DEADBEEF" "BEBECAFE"]""
+end note
+
+CC -[#red]> A: Confirm Payment of $ 200
+A -[#red]> C: Payment Request
+activate C
+note over C
+""PUT /loan/:id/payments/:payment-id HTTP/1.1""
+""If-Match: "DEADBEEF"""
+end note
+
+C -[#red]> D: Transact + Compare-and-Set
+note over D #FFEEEE
+""~[:db.fn/cas loan-id :loan/version "DEADBEEF" "BACABACA"]""
+end note
+D --[#red]> C: Transaction Exception
+note over C
+end note
+
+C --[#red]> A:
+deactivate C
+
+note over A #FFEEEE
+""HTTP/1.1 409 Conflict""
+end note
+
+A -[#red]> C: Get updated loan state
+note over A
+""HTTP/1.1 200 OK""
+""ETag: "BEBECAFE"""
+end note
+return
+
+... restart payment screen workflow ...
+
+A --[#red]> CC: Should Pay $ 100
+
+@enduml

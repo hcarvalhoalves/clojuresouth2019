@@ -1,0 +1,31 @@
+@startuml
+
+!include skin.iuml
+
+actor "API Client" as CC
+
+rectangle "Command API" {
+    file "Command" as C
+    component "Command Handler" as CH
+}
+
+rectangle "Query API" {
+    component "Event Handler" as EH
+    file View as V
+}
+
+file Event as E
+
+database "Log" as EL
+
+CC -> C: PUT Request
+CC -> V: GET Request
+
+C -> CH
+CH --> E
+E --> EH
+EH -> V
+
+E <-> EL
+
+@enduml

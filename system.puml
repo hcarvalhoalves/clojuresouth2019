@@ -1,0 +1,55 @@
+@startuml
+
+!include skin.iuml
+
+node "Loan Service" as loan #EEEEFF
+node "Front-end Service" as frontend
+node "Ledger Service" as ledger
+node "Analytical Service" as ana
+node "Deposits Service" as money
+node "Back-office Service" as bo
+file "Balance Sheet" as balancesheet
+file "Risk Report" as riskview
+file "Transfer Receipt" as receipts
+actor "Customer" as customer
+actor "Customer Support" as customersupport
+actor "Controllership" as controllership
+actor "Treasury" as treasury
+actor "Analyst" as riskana
+actor "Regulator" as regulator
+actor "Auditor" as auditor
+
+customer <-[#FF0000]-> frontend
+frontend <-[#FF0000]-> loan: Commands/Queries
+loan .[#0000FF].> ledger : Movement
+loan .[#0000FF].> ana: Update
+
+customersupport <-[#FF0000]-> bo
+bo <-[#FF0000]> loan: Commands/Queries
+
+loan <.[#FF0000]> money: Money Transfer
+money -[#FF0000]-> receipts: Queries
+ledger -[#0000FF]-> balancesheet: Daily Batch ETL
+ana -[#0000FF]-> riskview: Daily Batch ETL
+
+bo -[#FF0000]-> auditor: Queries
+
+riskview .[#0000FF].> regulator
+riskview .[#0000FF].> auditor
+riskview .[#0000FF].> riskana
+
+balancesheet .[#0000FF].> controllership
+balancesheet .[#0000FF].> regulator
+balancesheet .[#0000FF].> auditor
+balancesheet .[#0000FF].> riskana
+
+receipts .[#FF0000].> treasury
+receipts .[#FF0000].> controllership
+
+legend
+Legend
+<back:red>   </back> = Real-time flows
+<back:blue>   </back> = Batch flows
+endlegend
+
+@enduml

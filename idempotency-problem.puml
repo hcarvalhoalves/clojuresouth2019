@@ -1,0 +1,26 @@
+@startuml
+
+!include skin.iuml
+
+actor "Customer" as CC
+participant "Mobile App" as A
+participant "Service" as C
+database "Database" as D
+
+CC -> A: Initiate Payment Screen
+
+A -> C: Request Payment Simulation
+return
+
+A --> CC: Should Pay $ 200
+
+A -[#blue]> C: Confirm Payment of $ 200
+C -> D: Transaction
+...
+C -[#blue]-X A: Client Timeout
+
+A -> A: Retry
+
+A -[#red]> C: Confirm Payment of $ 200
+
+@enduml

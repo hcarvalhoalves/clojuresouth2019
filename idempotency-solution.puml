@@ -1,0 +1,36 @@
+@startuml
+
+!include skin.iuml
+
+actor "Customer" as CC
+participant "Mobile App" as A
+participant "Service" as C
+participant "Datomic Transactor" as D
+database "Storage" as S
+
+CC -> A: Initiate Payment Screen
+
+A -> C: Request Payment Simulation
+return
+
+A --> CC: Should Pay $ 200
+
+A -[#blue]> C: Confirm Payment of $ 200
+note over C: {:payment/id "DEADBEEF"}
+C -> D: Transaction
+D -> S: Store segment
+...
+C -[#blue]-X A: Client Timeout
+
+A -> A: Retry
+
+A -[#red]> C: Confirm Payment of $ 200
+note over C: {:payment/id "DEADBEEF"}
+C -[#red]> D: Transaction
+D -[#red]-> C: Transaction Exception
+note over C: {:db/error :db.error/unique-conflict}
+C -[#red]> S: Get historical database for previous transaction
+note over C: (datomic.api/as-of db (find-transaction-for-id db "DEADBEEF"))
+C -[#red]-> A: OK
+
+@enduml

@@ -1,0 +1,30 @@
+@startuml
+
+!include skin.iuml
+
+actor "Customer" as CC
+participant "Mobile App" as A
+box "Service Cluster" #FFFFFF
+    participant "Instance A" as C
+    participant "Instance B" as C2
+end box
+
+CC -> A: Initiate Payment Screen
+
+A -> C: Request Payment Simulation
+return
+
+A --> CC: Should Pay $ 200
+
+...
+
+]-[#blue]> C2: Confirm Payment of $ 200
+C2 -[#blue]->: OK
+
+...
+
+CC -[#red]> A: Confirm Payment of $ 200
+A -[#red]> C: Payment Request
+C -[#red]->]: Request Money Transfer of $ 200
+
+@enduml

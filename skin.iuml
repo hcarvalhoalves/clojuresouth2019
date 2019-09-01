@@ -1,0 +1,62 @@
+@startuml
+
+skinparam shadowing false
+skinparam dpi 150
+
+skinparam sequence {
+	ArrowColor black
+	ArrowThickness 1
+	ArrowFontSize 14
+	LifeLineBorderColor slateblue
+	LifeLineBackgroundColor white
+	BoxBorderColor violet
+	BoxBorderRound 15
+}
+
+skinparam rectangle {
+    fontColor goldenrod
+    backgroundColor white
+    borderColor goldenrod
+}
+
+skinparam actor {
+    backgroundColor white
+    borderColor slateblue
+}
+
+skinparam node {
+    backgroundColor white
+    borderColor slateblue
+}
+
+skinparam participant {
+    backgroundColor white
+    borderColor slateblue
+}
+
+skinparam file {
+    backgroundColor ivory
+    borderColor goldenrod
+}
+
+skinparam component {
+    backgroundColor white
+    borderColor slateblue
+}
+
+skinparam database {
+    backgroundColor white
+    borderColor slateblue
+}
+
+skinparam state {
+    backgroundColor #EFDEFF
+    borderColor black
+}
+
+skinparam note {
+    backgroundColor ivory
+    borderColor goldenrod
+}
+
+@enduml
